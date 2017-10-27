@@ -1,7 +1,4 @@
 
-//import gifAnimation.*;
-
-//GifMaker gif;
 
 class Particle
 {
@@ -75,21 +72,14 @@ float norm(float a, float b)
   return sqrt(a*a + b*b);
 }
 
-PGraphics pg;
-
 void setup()
 {
-  pg = createGraphics(500,500);
-  
-  size(500,500);
+  //size(500,500);
+  size(displayWidth,displayHeight);
+
   background(100);
   
   particles = new ArrayList<Particle>();
-
-  //gif = new GifMaker(this, "a-8-v2.gif");
-  //gif.setRepeat(0); // make it an "endless" animation
-  //gif.setQuality(20);
-  //gif.setDelay(20);
 }
 
 void draw()
@@ -99,7 +89,7 @@ void draw()
   
   for(int i = 0; i < 1; i++)
   {
-    r = 50;
+    r = 0.125*height;
     float px = x;
     float py = y;
     x = r*cos(t);

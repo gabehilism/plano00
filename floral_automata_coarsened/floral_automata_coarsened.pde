@@ -13,9 +13,9 @@ void setup()
 {
 	size(displayWidth,displayHeight);
 
-	N = 8*15;
-	M = 40;
-	S = 2;
+	N = 8*12;
+	M = 20;
+	S = 3;
 	tape = new int[N];
 	rules = new int[int(pow(S,3))];
 	random_rule();
@@ -25,26 +25,31 @@ void setup()
 }
 
 void draw()
-{	
-	clear();
+{
+	for(int i = 0; i < 1; i++)
+	{
+		t++;
+		draw_flower();
+	}
 
-	draw_flower();
-
-	if((t+=2) >= M)
+	if(t >= M)
 	{
 		t = 0;
 		random_rule();
 		descending = !descending;
-		//clear();
+		clear();
 	}
+
+	filter(BLUR,2);
+	filter(POSTERIZE,3);
 }
 
 void draw_flower()
 {
 	pushMatrix();
 	translate(width/2,height/2);
-	//int i = int(t);
-	for(int i = 0; i < t; i++)
+	int i = int(t);
+	//for(int i = 0; i < t; i++)
 	//for(int i = 0; i < M; i++)
 	{
 		float r0,r1;
@@ -86,7 +91,7 @@ void clear()
 {
 	for(int i = 0; i < N; i++)
 	{
-		tape[(i+int(0*t))%N] = i%(N/8)==0 ? 1 : 0;
+		tape[(i+int(0.5*t))%N] = i%(N/8)==0 ? 1 : 0;
 	}
 }
 

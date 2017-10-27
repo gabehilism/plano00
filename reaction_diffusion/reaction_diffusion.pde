@@ -19,10 +19,10 @@ boolean cycle = true;
 
 void setup()
 {	
-	//size(displayWidth,displayHeight);
-	size(500,500);
+	size(displayWidth,displayHeight);
+	//size(500,500);
 
-	N = 200;
+	N = 150;
 	M = int(width*N/height);
 
 	DA = 1;
