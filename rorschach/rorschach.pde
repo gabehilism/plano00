@@ -16,19 +16,14 @@ int seed = 0;
 
 void setup()
 {
-  size(500,500);
+  //size(500,500);
+  size(displayWidth,displayHeight);
   noStroke();
   initGUI();
 }
 
 void draw()
 {
-  if(t >= TWO_PI)
-  {
-    t -= TWO_PI;
-    seed = millis();
-  }
-
   background(200);
 
   fill(0);
@@ -53,10 +48,15 @@ void draw()
   }
   updatePixels();
 
-  filter(BLUR,5);
-  filter(POSTERIZE,5);
+  //filter(BLUR,5);
+  //filter(POSTERIZE,5);
 
-  t += TWO_PI/100;
+  t += TWO_PI/200;
+  if(t >= TWO_PI)
+  {
+    t -= TWO_PI;
+    seed = millis();
+  }
 }
 
 void blob(float x0, float y0)
@@ -93,7 +93,7 @@ void initGUI()
 
   cp5.addSlider("Blobs")
   .setValue(20)
-  .setRange(0,100)
+  .setRange(0,50)
   .setPosition(0,0)
   .setSize(120,20);
 
@@ -116,14 +116,14 @@ void initGUI()
   .setSize(120,20);
 
   cp5.addSlider("Noise_Scale")
-  .setValue(0.02)
-  .setRange(0,0.25)
+  .setValue(0.015)
+  .setRange(0,0.1)
   .setPosition(0,84)
   .setSize(120,20);
 
   cp5.addSlider("Time_Scale")
-  .setValue(1)
-  .setRange(0,5)
+  .setValue(0.5)
+  .setRange(0,2)
   .setPosition(0,105)
   .setSize(120,20);
 }
