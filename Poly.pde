@@ -1,27 +1,20 @@
-
-
-class Poly extends ILayer implements IRandomizable {
+class Poly {
   int slices;
   PVector[] points;
   
   float r;
   float max_r = height * 2f;
   float a;
-  int offset;
   
-  int life_left;
-  int life_total;
+  float life;
   
-   Poly(int _slices, int _offset) {
-    points = new PVector[MAX_VERTS];
-    offset = _offset;
+   Poly(int _slices, float _offset) {
+    points = new PVector[_slices];
+    life = _offset;
     //r = t2radius(t_ms2t(offset));
     //a = t2angle(t_ms2t(offset));
-    a = radians(90f);
+    //a = radians(90f);
     set_slices(_slices);
-    
-    life_total = T_MS_FULL_CYCLE;
-    life_left = T_MS_FULL_CYCLE - offset;
   }
   
   void set_slices(int n) {
@@ -32,35 +25,24 @@ class Poly extends ILayer implements IRandomizable {
       points[i] = new PVector(cos(a), sin(a));
     }
   }
+  
+  void updt(IEquation radius_eq, IEquation angle_eq) {
 
-  // angle equations
-  float get_angle(IEquation eq, float t) {
-    return eq.F(t * TAU);
-  }
-  
-  // radius equations
-  float get_radius(IEquation eq, float t) {
-    t = eq.F(t);
-    if (t > 1.0f) {
-      t = 0.0f;
+    float t = life;
+    r = radius_eq.F(t % 2f) * max_r;
+    a = angle_eq.F(t);
+    
+    if (r >= max_r) {
+      life = 0;
     }
-    return t * max_r;
+    else {
+      life += DT;
+    }
   }
   
-  void updt(int ms, IEquation radius_eq, IEquation angle_eq) {
-    float t = t_ms2t(ms + offset);
-    r = get_radius(radius_eq, t);
-    a = get_angle(angle_eq, t);
-  }
-  
- void updt(float t, IEquation radius_eq, IEquation angle_eq) {
-    r = get_radius(radius_eq, t);
-    a = get_angle(angle_eq, t);
-  }
-  
- void draw() {
-   //poly_draw();
-   point_draw();
+  void draw() {
+   poly_draw();
+   //point_draw();
   }
   
   void poly_draw() {
@@ -97,33 +79,21 @@ class Poly extends ILayer implements IRandomizable {
     popMatrix();
   }
   
-  void rng() {
+  void line_draw() {
+    noFill();
+    stroke(255);
+    strokeWeight(height * 0.001f);
     
+    pushMatrix();
+    
+    rotateZ(a);
+    
+    beginShape();
+    for (int i = 0; i <= slices - 1; i++) {
+      PVector p1 = points[i];
+      vertex(p1.x * r, p1.y * r);
+    }
+    endShape(CLOSE);
+    popMatrix();
   }
-  
-  IRandomizable[] get_rng_children() {
-    return new IRandomizable[] {};
-  }
-  
-  // void draw(float _a) {
-  //  stroke(255);
-  //  strokeWeight(height * 0.001f);
-    
-  //  pushMatrix();
-  //  rotateZ(_a);
-    
-  //  for (int i = 0; i < slices - 1; i++) {
-  //    PVector p1 = points[i];
-  //    PVector p2 = points[i+1];
-  //    line(p1.x, p1.y, p2.x, p2.y); 
-  //  }
-    
-  //  PVector p1 = points[0];
-  //  PVector p2 = points[slices-1];
-    
-  //  line(p1.x, p1.y, p2.x, p2.y);
-    
-  //  popMatrix();
-  //}
-  
 }

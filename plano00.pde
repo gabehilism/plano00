@@ -1,16 +1,7 @@
-//import processing.sound.*;
+
 import ddf.minim.*;
 import ddf.minim.analysis.*;
-//import ddf.minim.effects.*;
-//import ddf.minim.signals.*;
-//import ddf.minim.spi.*;
-//import ddf.minim.ugens.*;
-
-//import controlP5.*;
-
-int N_POLIS = 30;
-int N_VERTS = 3;
-int MAX_VERTS = 100;
+import controlP5.*;
 
 Minim minim;
 AudioPlayer player;
@@ -19,14 +10,10 @@ AudioPlayer song;
 FFT fft;
 BeatDetect beat_detect;
 
-Controls c;
-Background bg;
-ChromaticAberrationFilter chroma;
+ControlP5 cp5;
 
-float T = 0.0f;
-int T_MODE_BEAT = 0B000001;
-int T_MODE_CYCLE = 0B000010;
-int T_MODE = T_MODE_BEAT;
+int T = 0;
+float DT = 0.0f;
 
 float T_KICK;
 float T_KICK_DECAY = 0.5f;
@@ -37,63 +24,46 @@ float T_HAT_DECAY = 0.95f;
 float T_BEAT;
 float T_BEAT_DECAY = 0.3f;
 
-float T_PULSE;
-float T_PULSE_SPEED = 0.1f;
-float T_PULSE_DECAY = 0.99f;
-float T_PULSE_MIN = 0.3f;
+float T_MS_FACTOR = 1;
 
-float T_CYCLE;
-int T_MS_FULL_CYCLE = 1000; // ms 
-int T_MS_DIV = 5;
-
-void t_updt(int ms) {  
-  T_CYCLE = t_ms2t(ms);
+void t_updt() {
+  int ms = millis();
+  int dms = ms - T;
+  
+  DT = (float(dms) / 1000) / T_MS_FACTOR;
+  T += dms;
   
   T_KICK *= T_KICK_DECAY;
   if (beat_detect.isKick()) {
     T_KICK = 1.0f;
+    on_beat(0);
   }
   
   T_SNARE *= T_SNARE_DECAY;
   if (beat_detect.isSnare()) {
     T_SNARE = 1.0f;
+    on_beat(1);
   }
   
   T_HAT *= T_HAT_DECAY;
   if (beat_detect.isHat()) {
     T_HAT = 1.0f;
+    on_beat(2);
   }
-  
-  T_PULSE = lerp(T_PULSE, max(T_KICK, T_SNARE), T_PULSE_SPEED);
-  
-  //T_BEAT *= T_BEAT_DECAY;
-  //if (beat_detect.isRange(0,beat_detect.detectSize(), 3)) {
-  //  T_BEAT = 1.0f;
-  //}
 }
 
-void t_debug() {
-  String s = "T: " + T + "\n" +
-             "T_KICK: " + T_KICK + "\n" +
-             "T_CYCLE: " + T_CYCLE + "\n";
-             
-  text(s, 0, 100);
+void on_beat(int b) {
+  for (ILayer l : layers) {
+    l.on_beat(b);
+  }
 }
 
-int t_ms() {
-  return millis() / T_MS_DIV;
+void t_debug_menu() {
+  cp5.addSlider("t_ms_factor").setRange(1f,5f).setValue(T_MS_FACTOR);
 }
 
-float t_ms2t(int ms) {
-  return t_ms2t(ms, T_MS_FULL_CYCLE);
-}
-
-float t_ms2t(int ms, int fms) {
-  return (float(ms) % fms)/fms;
-}
-
-int t_t2ms(float t) {
-  return int((t % 1.0f) * T_MS_FULL_CYCLE);
+void t_ms_factor(float t) {
+  T_MS_FACTOR = t;
 }
 
 // zzz
@@ -105,6 +75,9 @@ interface IRandomizable {
 void setup() {
   size(1280, 768, P3D);
   
+  cp5 = new ControlP5(this);
+  t_debug_menu();
+  
   minim = new Minim(this);
   input = minim.getLineIn(Minim.STEREO, 2048);
   song = minim.loadFile("set-kika-master-2h.mp3", 2048);
@@ -115,34 +88,34 @@ void setup() {
   beat_detect.detectMode(BeatDetect.FREQ_ENERGY);
   beat_detect.setSensitivity(2);
   
-  PolyTunnel[] tunnels = {
-    
-  };
-  c = new Controls(tunnels);
-  
-  layers.add(new Background());
-  layers.add(new PolyTunnel(N_POLIS, 50, new EqEmpty(), new Eq00()));
-  layers.add(new ChromaticAberrationFilter(new Eq02(), 20));
-  
-  print(T_MODE_BEAT & T_MODE);
-  print("\n");
+  G_ADD_LAYER(new SlideshowBackground());
+  G_ADD_LAYER(new ChromaticAberrationFilter());
+  G_ADD_LAYER(new PolyTunnel());
 }
 
 void keyPressed() {
-  c.keyPressed();
+  if (key == 'd') {
+    if (cp5.isVisible()) cp5.hide(); else cp5.show();
+  }
 }
 
 void draw() {
-  t_updt(millis());
+  t_updt();
   
   beat_detect.detect(song.mix);
   
   background(0);
   for (ILayer l : layers) {
+    pushStyle();
+    l.style();
     l.draw();
+    popStyle();
   }
   
-  c.updt();
+    text(DT, 100, 100);
+    text(T, 100, 200);
+}
+
+void generate() {
   
-  t_debug();
 }
