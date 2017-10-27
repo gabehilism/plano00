@@ -1,8 +1,4 @@
-import gifAnimation.*;
 import controlP5.*;
-import java.util.Collections;
-
-GifMaker gif;
 
 ControlP5 cp5;
 ColorPicker colorpicker;
@@ -17,14 +13,16 @@ float t = 0;
 float ns;
 float nst;
 
-boolean cycle_color = false;
+boolean cycle_color;
+boolean cycle_radius;
 float offset;
-float radius;
-float inner_radius;
+Slider radius;
+Slider inner_radius;
 
 void setup()
 {
-  size(500,500);
+  //size(500,500);
+  size(displayWidth,displayHeight);
   
   N = 2000;
   
@@ -48,12 +46,15 @@ void draw()
   else
     stroke(colorpicker.getColorValue());
 
-  inner_radius  = 0.25*(1+cos(t));
-  radius        = 0.5*(1.5+sin(t));
+  if(cycle_radius)
+  {
+    inner_radius.setValue(0.25*(1+cos(t)));
+    radius.setValue(0.5*(1.5+sin(t)));
+  }
   
   for(int i = 0; i < N; i++)
   {
-    float r = width*0.5*inner_radius + width*0.5*radius*noise(ns*i/N,nst*t);
+    float r = height*0.5*inner_radius.getValue() + height*0.5*radius.getValue()*noise(ns*i/N,nst*t);
     positions[i].x = width/2  + r*cos(TWO_PI*i/N);
     positions[i].y = height/2 + r*sin(TWO_PI*i/N);
   }
@@ -125,47 +126,62 @@ void prim()
 
 void keyPressed()
 {
-  gif.finish();
-  exit();
+  if(cp5.isVisible())
+  {
+    cp5.hide();
+  }
+  else
+  {
+    cp5.show();
+  }
 }
 
 void initGUI()
 {
   cp5 = new ControlP5(this);
+  cp5.hide();
+
+  int i = 0;
 
   colorpicker = new ColorPicker(cp5, "hacktastic");
   colorpicker
-  .setPosition(width-256,0)
+  .setPosition(width-256,21*(i))
   .setColorValue(color(255,150));
 
   cp5.addButton("Cycle_Color")
   .setValue(0)
-  .setPosition(0,0)
+  .setPosition(0,21*(i++))
   .setSize(120,20)
   ;
 
-  cp5.addSlider("Radius")
+  cp5.addButton("Cycle_Radius")
+  .setValue(0)
+  .setPosition(0,21*(i++))
+  .setSize(120,20)
+  ;
+
+  radius = cp5.addSlider("Radius")
   .setValue(0.5)
   .setRange(0,1)
-  .setPosition(0,21)
+  .setPosition(0,21*(i++))
   .setSize(120,20);
 
-  cp5.addSlider("Inner_Radius")
+  inner_radius = cp5.addSlider("Inner_Radius")
   .setValue(0.3)
   .setRange(0,1)
-  .setPosition(0,42)
+  .setPosition(0,21*(i++))
   .setSize(120,20);
 
   cp5.addSlider("Noise_Scale")
   .setValue(1000)
   .setRange(0,1000)
-  .setPosition(0,63)
+  .setPosition(0,21*(i++))
   .setSize(120,20);
 
   cp5.addSlider("Time_Scale")
   .setValue(0.1)
   .setRange(0,1)
-  .setPosition(0,84)
+  .setPosition(0,21*(i++))
   .setSize(120,20);
 }
 
@@ -174,19 +190,14 @@ public void Cycle_Color()
   cycle_color = !cycle_color;
 }
 
+public void Cycle_Radius()
+{
+  cycle_radius = !cycle_radius;
+}
+
 public void Offset(float x)
 {
   offset = x;
-}
-
-public void Radius(float x)
-{
-  radius = x;
-}
-
-public void Inner_Radius(float x)
-{
-  inner_radius = x;
 }
 
 public void Noise_Scale(float x)
