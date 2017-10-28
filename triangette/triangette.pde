@@ -14,12 +14,12 @@ float ns = 0.02;
 
 void setup()
 {
-  size(600,600);
+  size(displayWidth,displayHeight);
 }
 
 void draw()
 {
-  background(50);
+  background(0);
   translate(width/2,height/2);
   
   int N = 50;

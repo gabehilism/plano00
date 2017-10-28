@@ -97,6 +97,7 @@ void keyPressed()
 void initGUI()
 {
   cp5 = new ControlP5(this);
+  cp5.hide();
 
   colorpicker = new ColorPicker(cp5, "hacktastic");
   colorpicker

@@ -17,6 +17,8 @@ float t1 = 0;
 float t2 = 0;
 boolean cycle = true;
 
+int current = 0;
+
 void setup()
 {	
 	size(displayWidth,displayHeight);
@@ -31,7 +33,7 @@ void setup()
 
 	Clear();
 	initGUI();
-	Solitions();
+	Coral_Growth();
 }
 
 void draw()
@@ -47,46 +49,53 @@ void draw()
 		x = N*i/height;
 		y = M*j/width;
 
-		pixels[i*width+j] = color(255*A[x][y],255*B[x][y],255);
+		pixels[i*width+j] = color(255*(1-A[x][y])+255*(B[x][y]));
 	}
 	updatePixels();
 
 	update(8);
 
-	t1 += TWO_PI/200;
+	t1 += TWO_PI/500;
 	if( t1 > TWO_PI )
 	{
 		t1 -= TWO_PI;
 
 		if(cycle)
-		switch (int(random(0,4+1)))
 		{
-			case 0:
-				Coral_Growth();
-				break;
-			case 1:
-				Mitosis();
-				break;
-			case 2:
-				Solitions();
-				break;
-			case 3:
-				Holes();
-				break;
-			case 4:
-				Moving_Spots();
-				break;
-			case 5:
-				Waves();
-				break;
-		}
-
-		for(int p = 0; p < 2; p++)
-		{
-			int x,y;
-			x = (int)random(0,N);
-			y = (int)random(0,M);
-			B[x][y] = 1;
+			switch ((current = (current+1)%10))
+			{
+				case 0:
+					Coral_Growth();
+					break;
+				case 1:
+					Mitosis();
+					break;
+				case 2:
+					Solitions();
+					break;
+				case 3:
+					Pulsating_Solutions();
+					break;
+				case 4:
+					Worms();
+					break;
+				case 5:
+					Mazes();
+					break;
+				case 6:
+					Holes();
+					break;
+				case 7:
+					Moving_Spots();
+					break;
+				case 8:
+					Waves();
+					break;
+				case 9:
+					U_Skate();
+					break;
+			}
+			clear();
 		}
 	}
 
@@ -100,7 +109,10 @@ void draw()
 			int x,y;
 			x = (int)random(0,N);
 			y = (int)random(0,M);
-			B[x][y] = 1;
+			
+			for(int i = -2; i <= 2; i++)
+				for(int j = -2; j <= 2; j++)
+					B[(x+i+N)%N][(y+j+M)%M] = 1;
 		}
 	}
 }
@@ -190,6 +202,7 @@ void keyPressed()
 void initGUI()
 {
   cp5 = new ControlP5(this);
+  cp5.hide();
 
   int i = 0;
 
@@ -277,15 +290,19 @@ void Clear()
 	for(int j = 0; j < M; j++)
 	{
 		A[i][j] = 1;
-		B[i][j] = 0;
+		B[i][j] = abs(i-N/2) + abs(j-M/2) < 20 ? 1 : 0;
 	}
 
-	for(int p = 0; p < 10; p++)
+
+	for(int p = 0; p < 1; p++)
 	{
 		int x,y;
 		x = (int)random(0,N);
 		y = (int)random(0,M);
-		B[x][y] = 1;
+		
+		for(int i = -2; i <= 2; i++)
+			for(int j = -2; j <= 2; j++)
+				B[(x+i+N)%N][(y+j+M)%M] = 1;
 	}
 }
 

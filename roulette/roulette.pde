@@ -14,7 +14,7 @@ float ns = 0.02;
 
 void setup()
 {
-  size(600,600);
+  size(displayWidth,displayHeight);
   noStroke();
 }
 
