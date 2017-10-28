@@ -5,7 +5,7 @@ float ns = 0.02; // ns: noise scale
 
 void setup()
 {
-  size(800,800);
+  size(displayWidth,displayHeight);
   colorMode(HSB,1,1,1);
   stroke(0.4,1,1);
   strokeWeight(1);
@@ -13,7 +13,7 @@ void setup()
 
 void draw()
 {
-  background(0, 0, 0.2);
+  background(0, 0, 0);
   translate(width/2,height/2 + 150);
   
   leaf(PI,0.2*L);
@@ -36,7 +36,7 @@ void draw()
   // top leaf
   leaf(0,L);
   
-  t += TWO_PI/300 ;
+  t += TWO_PI/200 ;
 }
 
 void leaf(float a, float l)

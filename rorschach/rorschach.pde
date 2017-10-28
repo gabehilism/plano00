@@ -36,7 +36,7 @@ void draw()
     x0 = random(0,width/2);
     y0 = random(0,height);
     
-    fill(random(0,1) < 0.5 ? 0 : 200, 240);
+    fill(random(0,1) < 0.5 ? 0 : 200);
     blob(x0,y0);
   }
 

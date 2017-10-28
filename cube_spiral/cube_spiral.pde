@@ -19,7 +19,7 @@ float s;
 
 void setup()
 {
-  size(600,600,P3D);
+  size(displayWidth,displayHeight,P3D);
   background(0);
   
   rotx = 0;
@@ -29,13 +29,13 @@ void setup()
 
 void draw()
 {
-  background(50);
+  background(0);
   
   translate(width/2,height/2);
   
   scale(s);
   rotateX(roty);
-  rotateY(rotx);
+  rotateY(rotx+0.0005*millis());
   
   int N = 100;
   float R = 80;

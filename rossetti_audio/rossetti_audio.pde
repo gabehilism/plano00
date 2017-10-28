@@ -29,7 +29,7 @@ float t = 0;
 
 void setup()
 {
-  size(600,600);
+  size(displayWidth,displayHeight);
   colorMode(HSB);
  
   minim = new Minim(this);
@@ -66,13 +66,13 @@ void draw()
     {
       float fi = fft.getBand((i)*fft.specSize()/N);
 
-      float r = inner_radius*width + radius*(N-i)*width/N;
+      float r = inner_radius*height + radius*(N-i)*height/N;
       
       beginShape();
       for(int j = 0; j <= M+2; j++)
       {      
-        float d1 = 0.1*width*max(-1*fi, 1.5*(-0.5 + noise(nsi*float(i)/N + nst*t, nsj*cos(0.45*PI + 0.1*PI*j/(M-1)))));
-        float d2 = 0.02*width*noise(nsi*(float(i)/N), nsj*cos(0.45*PI + 0.1*PI*j/(M-1)) );
+        float d1 = 0.1*height*max(-1*fi, 1.5*(-0.5 + noise(nsi*float(i)/N + nst*t, nsj*cos(0.45*PI + 0.1*PI*j/(M-1)))));
+        float d2 = 0.02*height*noise(nsi*(float(i)/N), nsj*cos(0.45*PI + 0.1*PI*j/(M-1)) );
         
         float x,y;
         x = (r+d1+d2)*cos(float(j)*TWO_PI/M + offset*TWO_PI*float(i)/N);

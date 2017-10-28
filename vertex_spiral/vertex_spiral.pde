@@ -19,7 +19,7 @@ float s;
 
 void setup()
 {
-  size(600,600,P3D);
+  size(displayWidth,displayHeight,P3D);
   background(0);
   
   rotx = 0;
@@ -29,7 +29,7 @@ void setup()
 
 void draw()
 {
-  background(50);
+  background(0);
   
   translate(width/2,height/2);
   

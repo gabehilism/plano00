@@ -22,7 +22,7 @@ void setup()
 {
 	size(displayWidth,displayHeight);
 
-	mini_canvas = createGraphics(500,500);
+	mini_canvas = createGraphics(600,600);
 
 	tape = new int[N];
 	rules = new int[int(pow(S,3))];

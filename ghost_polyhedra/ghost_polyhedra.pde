@@ -8,7 +8,7 @@ float t = 0;
 
 void setup()
 {
-	size(500,500,P3D);
+	size(displayWidth,displayHeight,P3D);
 	colorMode(HSB,1,1,1);
 
 	L = 0.75*height;
@@ -24,7 +24,7 @@ void draw()
 {
 	background(0.1);
 	setOrtho();
-	translate(0*width,1.25*width,0*width);
+	translate(0*width,1.2*height,0*height);
 	rotateY(t/4);
 
 	noFill();

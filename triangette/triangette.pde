@@ -23,7 +23,7 @@ void draw()
   translate(width/2,height/2);
   
   int N = 50;
-  float R = 200;
+  float R = 300;
   for(int i = 0; i < N; i++)
   {
     float r = R*(N-i)/N;
